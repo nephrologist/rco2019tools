@@ -4,7 +4,7 @@ from random import randint, seed
 
 seed(2023013)
 INPUT_DIR = Path("./in")
-OUTPUT_DIR = Path("./in")
+OUTPUT_DIR = Path("./out")
 if not INPUT_DIR.exists():
     INPUT_DIR.mkdir()
 if not OUTPUT_DIR.exists():

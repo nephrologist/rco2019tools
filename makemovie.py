@@ -39,4 +39,4 @@ except ModuleNotFoundError:
     print("command is pip install cairosvg", file=sys.stderr)
 
 
-# ffmpeg -r 30 -i ./memo/%04d.png -vcodec libx264 -pix_fmt yuv420p -r 60 out.mp4
+# ffmpeg -r 30 -i ./memo/out%04d.png -vcodec libx264 -pix_fmt yuv420p -r 60 out.mp4
