@@ -1,39 +1,18 @@
 #![allow(non_snake_case)]
-
+#![allow(non_upper_case_globals)]
 use proconio::{input, source::*};
 use std::io::BufRead;
 pub const N: usize = 50;
 pub const M: usize = 2500;
-pub const is_visualizeall: bool = true;
+pub const IS_VISUALIZEALL: bool = false;
+pub const VISUALIZE_STEP: usize = 20;
 pub const dx: [usize; 4] = [1, 0, !0, 0];
 pub const dy: [usize; 4] = [0, 1, 0, !0];
-
-// const list_cid: [&str; 10] = [
-//     "#FFFFFF", "#43C3D0", "#9BB9DE", "#BAE5F5", "#EDF5ED", "#D2EDC1", "#DAF161", "#E5F302",
-//     "#F2E703", "#EA0406",
-// ];
-// const blud_cid: [&str; 10] = [
-//     "aliceblue",
-//     "lavender",
-//     "royalblue",
-//     "skyblue",
-//     "lightskyblue",
-//     "deepskyblue",
-//     "steelblue",
-//     "dodgerblue",
-//     "blue",
-//     "navy",
-// ];
 
 const blud_cid: [&str; 10] = [
     "#aaaaff", "#9999fa", "#8888f6", "#7777f2", "#6666ee", "#5555ea", "#4444e5", "#3333e1",
     "#2222dd", "#1111d9",
 ];
-
-// const orange_cid: [&str; 10] = [
-//     "#fffaf4", "#fff4ea", "#ffead5", "#ffd5aa", "#ffbf80", "#ffaa55", "#ff952b", "#ff8000",
-//     "#d56a00", "#aa5500",
-// ];
 
 const orange_cid: [&str; 10] = [
     "#ffd5aa", "#ffcc99", "#ffc488", "#ffbb77", "#ffb366", "#ffaa55", "#ffa244", "#ff9933",
@@ -50,25 +29,18 @@ fn main() {
     }
     let input = read_input(&std::env::args().nth(1).unwrap());
     let output = read_output(&std::env::args().nth(2).unwrap());
-    // if output.vals.len() > 2500 {
-    //     println!("score {}", 0);
-    //     std::process::exit(1);
-    // }
-    // let board = Board {
-    //     n: N,
-    //     nums: input.board.clone(),
-    //     score: 0,
-    // };
-    let board = calcscore(&input, &output);
+    let tp = calcscore(&input, &output);
+    let board = tp.0;
+    let visualize_cnt = tp.1;
     println!("score {}", &board.score);
-    vis(&board, 0);
+    vis(&board, visualize_cnt);
 }
 
 #[derive(Clone, Debug)]
 pub struct Input {
     pub n: usize,
     pub m: usize,
-    pub board: Vec<i64>,
+    pub vals: Vec<i64>,
 }
 
 pub struct Output {
@@ -91,15 +63,17 @@ pub fn idxtoval(idx: usize, n: usize) -> (usize, usize) {
     (idx / n, idx % n)
 }
 
-pub fn calcscore(input: &Input, output: &Output) -> Board {
+pub fn calcscore(input: &Input, output: &Output) -> (Board, usize) {
+    let mut visualize_cnt = 0;
     let mut board = Board {
         n: input.n,
-        nums: input.board.clone(),
+        nums: input.vals.clone(),
         score: 0,
         is_harvested: vec![false; input.n * input.n],
     };
-    if is_visualizeall {
-        vis(&board, 0);
+    if IS_VISUALIZEALL {
+        vis(&board, visualize_cnt);
+        visualize_cnt += 1;
     }
 
     for i in 0..output.vals.len() {
@@ -114,14 +88,18 @@ pub fn calcscore(input: &Input, output: &Output) -> Board {
                 continue;
             };
             let mut stack = Vec::new();
+            let mut temp_used = board.is_harvested.clone();
+            let mut temp_cnt = 0;
+            let mut temp_delta = 0;
             stack.push(idx);
             while stack.len() > 0 {
                 let idx = stack.pop().unwrap();
-                if board.is_harvested[idx] {
+                if temp_used[idx] {
                     continue;
                 }
-                board.is_harvested[idx] = true;
-                board.score += board.nums[idx];
+                temp_cnt += 1;
+                temp_used[idx] = true;
+                temp_delta += board.nums[idx];
                 let tp = idxtoval(idx, board.n);
                 let x = tp.0;
                 let y = tp.1;
@@ -130,7 +108,7 @@ pub fn calcscore(input: &Input, output: &Output) -> Board {
                     let ny = y + dy[t];
                     if nx < input.n && ny < input.n {
                         let nidx = valtoidx(nx, ny, board.n);
-                        if board.is_harvested[nidx] {
+                        if temp_used[nidx] {
                             continue;
                         }
                         if board.nums[idx] != board.nums[nidx] {
@@ -140,13 +118,18 @@ pub fn calcscore(input: &Input, output: &Output) -> Board {
                     }
                 }
             }
+            if temp_cnt >= board.nums[idx] {
+                board.score += temp_delta;
+                std::mem::swap(&mut board.is_harvested, &mut temp_used);
+            }
         }
-        if is_visualizeall && i % 10 == 9 {
-            vis(&board, i);
+        if IS_VISUALIZEALL && i % VISUALIZE_STEP == VISUALIZE_STEP - 1 {
+            vis(&board, visualize_cnt);
+            visualize_cnt += 1
         }
     }
 
-    board
+    (board, visualize_cnt)
 }
 
 // pub fn score(input: &Input, out: &Vec<Rect>) -> i64 {}
@@ -162,9 +145,9 @@ fn read_input(f: &str) -> Input {
         from f,
         n: usize,
         m:usize,
-        board:[i64;n*n],
+        vals:[i64;n*n],
     }
-    Input { n, m, board }
+    Input { n, m, vals }
 }
 //output は長さ無制限のときがよくわからなかったので自作
 fn read_output(f: &str) -> Output {
@@ -176,7 +159,7 @@ fn read_output(f: &str) -> Output {
     let ff = std::io::BufReader::new(f);
     for line in ff.lines() {
         let temp = line.unwrap();
-        let mut val: Vec<&str> = temp.split_whitespace().collect();
+        let val: Vec<&str> = temp.split_whitespace().collect();
         let v1: usize = val[0].parse().unwrap();
         let v2: usize = val[1].parse().unwrap();
         let v3: usize = val[2].parse().unwrap();
