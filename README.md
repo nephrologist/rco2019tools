@@ -2,6 +2,20 @@
 
 適当です。
 
+## ディレクトリ構成
+
+rco-contest-2019-qual
+├── in # testcaseのinput, xxxx.inの形
+├── out # result, xxxx.outの形
+├── src
+│   └── bin/main.rs
+└── tools
+    ├── out # 複数ケース実行時の結果まとめ用ディレクトリ
+    ├── memo # visualizer用のメモディレクトリ
+    ├── score.txt
+    └── src
+        └── bin/vis.rs
+
 ## visualizer(Rust)
 
 visualizerの使用方法
