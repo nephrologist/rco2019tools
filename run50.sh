@@ -1,5 +1,5 @@
-
-
+# https://github.com/udon1206/AHC003/blob/main/tools/run.shを大いに参考にしています。
+# Thanks a lot for udon1206-san
 
 # コンパイル
 cd /Users/satodai/git/atc_rust/rco-contest-2019-qual/
