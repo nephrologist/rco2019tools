@@ -2,11 +2,12 @@
 # Thanks a lot for udon1206-san
 
 
-# コンパイル
-cd /Users/satodai/git/atc_rust/rco-contest-2019-qual/
-cargo build --release --bin bb
+
+# # コンパイル
+# cd /Users/satodai/git/atc_rust/rco-contest-2019-qual/
+# cargo build --release --bin bb
 cd /Users/satodai/git/atc_rust/rco-contest-2019-qual/tools/
-cargo build --release --bin vis
+# cargo build --release --bin vis
 
 #[st, en] のseed のファイルを処理する．procsはプロセス数，print_errorはxargs のエラー出力表示
 st=0
@@ -15,7 +16,7 @@ procs=32
 print_error=1
 # output生成
 f1(){
-  /Users/satodai/git/atc_rust/target/release/bb < /Users/satodai/git/atc_rust/rco-contest-2019-qual/in/$1.in >/Users/satodai/git/atc_rust/rco-contest-2019-qual/out/$1.out
+  python3 ../main.py < ../in/$1.in >../out/$1.out
 }
 # ビジュアライザに通して，スコアを標準出力として取得する関数
 f2(){
