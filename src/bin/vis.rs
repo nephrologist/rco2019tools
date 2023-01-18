@@ -5,7 +5,7 @@ use std::io::BufRead;
 pub const N: usize = 50;
 pub const M: usize = 2500;
 pub const IS_VISUALIZEALL: bool = false;
-pub const VISUALIZE_STEP: usize = 20;
+pub const VISUALIZE_STEP: usize = 50;
 pub const dx: [usize; 4] = [1, 0, !0, 0];
 pub const dy: [usize; 4] = [0, 1, 0, !0];
 
