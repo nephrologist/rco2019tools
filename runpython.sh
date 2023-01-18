@@ -11,7 +11,7 @@ cd /Users/satodai/git/atc_rust/rco-contest-2019-qual/tools/
 
 #[st, en] のseed のファイルを処理する．procsはプロセス数，print_errorはxargs のエラー出力表示
 st=0
-en=999
+en=15
 procs=32
 print_error=1
 # output生成
@@ -20,7 +20,7 @@ f1(){
 }
 # ビジュアライザに通して，スコアを標準出力として取得する関数
 f2(){
-   /Users/satodai/git/atc_rust/target/release/vis /Users/satodai/git/atc_rust/rco-contest-2019-qual/in/$1.in /Users/satodai/git/atc_rust/rco-contest-2019-qual/out/$1.out >> score.txt 2> /dev/null
+  cargo run --release --bin vis ../in/$1.in ../out/$1.out >> score.txt 2> /dev/null 
 }
 # xargs で関数使うための処理
 export -f f1
