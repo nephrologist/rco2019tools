@@ -11,7 +11,7 @@ cd /Users/satodai/git/atc_rust/rco-contest-2019-qual/tools/
 
 #[st, en] のseed のファイルを処理する．procsはプロセス数，print_errorはxargs のエラー出力表示
 st=0
-en=15
+en=999
 procs=32
 print_error=1
 # output生成
